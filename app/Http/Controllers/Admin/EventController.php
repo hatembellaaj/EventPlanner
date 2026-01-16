@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\EventUpdateRequest;
 use App\Models\Category;
 use App\Models\Event;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class EventController extends Controller
@@ -41,6 +42,7 @@ class EventController extends Controller
         $this->authorize('create', Event::class);
 
         $data = $request->validated();
+        $imagePath = $request->file('image')?->store('events', 'public');
 
         $event = Event::create([
             'ba_title' => $data['title'],
@@ -51,6 +53,7 @@ class EventController extends Controller
             'ba_capacity' => $data['capacity'],
             'ba_price' => $data['price'],
             'ba_is_free' => $data['is_free'],
+            'ba_image' => $imagePath,
             'ba_status' => $data['status'],
             'ba_category_id' => $data['category_id'],
             'ba_created_by' => $request->user()->ba_id,
@@ -88,7 +91,7 @@ class EventController extends Controller
 
         $data = $request->validated();
 
-        $event->update([
+        $payload = [
             'ba_title' => $data['title'],
             'ba_description' => $data['description'],
             'ba_start_date' => $data['start_date'],
@@ -99,7 +102,17 @@ class EventController extends Controller
             'ba_is_free' => $data['is_free'],
             'ba_status' => $data['status'],
             'ba_category_id' => $data['category_id'],
-        ]);
+        ];
+
+        if ($request->hasFile('image')) {
+            if ($event->ba_image) {
+                Storage::disk('public')->delete($event->ba_image);
+            }
+
+            $payload['ba_image'] = $request->file('image')->store('events', 'public');
+        }
+
+        $event->update($payload);
 
         return redirect()
             ->route('admin.events.edit', $event)
@@ -109,6 +122,10 @@ class EventController extends Controller
     public function destroy(Event $event): RedirectResponse
     {
         $this->authorize('delete', $event);
+
+        if ($event->ba_image) {
+            Storage::disk('public')->delete($event->ba_image);
+        }
 
         $event->delete();
 

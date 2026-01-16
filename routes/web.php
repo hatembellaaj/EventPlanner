@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\RegistrationController;
+use App\Models\Event;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -22,7 +23,11 @@ Route::middleware('auth')->group(function () {
     Route::view('/dashboard', 'dashboard')->name('dashboard');
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
-    Route::view('/events/{event}', 'events.show')->name('events.show');
+    Route::get('/events/{event}', function (Event $event) {
+        $event->loadMissing('category');
+
+        return view('events.show', compact('event'));
+    })->name('events.show');
     Route::post('/events/{event}/registrations', [RegistrationController::class, 'store'])
         ->name('events.registrations.store');
 });

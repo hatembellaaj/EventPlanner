@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Event extends Model
 {
@@ -76,6 +77,15 @@ class Event extends Model
     public function isFull(): bool
     {
         return $this->remainingSeats() <= 0;
+    }
+
+    public function imageUrl(): ?string
+    {
+        if (! $this->ba_image) {
+            return null;
+        }
+
+        return Storage::disk('public')->url($this->ba_image);
     }
 
     public function scopeActive(Builder $query): Builder

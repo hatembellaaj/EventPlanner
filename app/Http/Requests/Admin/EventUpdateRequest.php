@@ -34,6 +34,7 @@ class EventUpdateRequest extends FormRequest
             'price' => ['required', 'numeric', 'min:0'],
             'category_id' => ['required', 'integer', Rule::exists('ba_categories', 'ba_id')],
             'status' => ['required', Rule::in(['active', 'archived'])],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ];
     }
 }

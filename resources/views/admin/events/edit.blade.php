@@ -77,8 +77,15 @@
                 </div>
                 <div>
                     <x-input-label for="image" value="Image" />
-                    <input id="image" name="image" type="file" class="mt-2 block w-full text-sm text-slate-500" />
+                    <input id="image" name="image" type="file" accept="image/png,image/jpeg,image/webp" class="mt-2 block w-full text-sm text-slate-500" />
+                    <p class="mt-2 text-xs text-slate-500">Formats acceptés : JPG, PNG, WEBP. Taille max : 2 Mo.</p>
                     <x-input-error :messages="$errors->get('image')" class="mt-2" />
+                    @if ($event->imageUrl())
+                        <div class="mt-3">
+                            <p class="text-xs uppercase tracking-wide text-slate-400">Image actuelle</p>
+                            <img src="{{ $event->imageUrl() }}" alt="Image de l'événement {{ $event->ba_title }}" class="mt-2 h-32 w-full rounded-lg object-cover md:w-64" />
+                        </div>
+                    @endif
                 </div>
             </div>
 
