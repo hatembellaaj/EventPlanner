@@ -24,8 +24,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
     Route::get('/events', [PublicEventController::class, 'index'])->name('events.index');
+    Route::get('/my-registrations', [RegistrationController::class, 'index'])->name('registrations.index');
     Route::post('/events/{event}/register', [RegistrationController::class, 'store'])
         ->name('events.register');
+    Route::delete('/events/{event}/unregister', [RegistrationController::class, 'destroy'])
+        ->name('events.unregister');
 });
 
 Route::get('/events/{event}', [PublicEventController::class, 'show'])->name('events.show');

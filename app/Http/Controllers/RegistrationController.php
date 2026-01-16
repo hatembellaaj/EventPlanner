@@ -5,10 +5,26 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\Registration;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
 
 class RegistrationController extends Controller
 {
+    public function index(): View
+    {
+        $user = request()->user();
+
+        $events = Event::query()
+            ->with('category')
+            ->whereHas('registrations', function ($query) use ($user) {
+                $query->where('ba_user_id', $user->ba_id);
+            })
+            ->orderBy('ba_start_date')
+            ->get();
+
+        return view('registrations.index', compact('events'));
+    }
+
     public function store(Event $event): RedirectResponse
     {
         $user = request()->user();
@@ -67,5 +83,33 @@ class RegistrationController extends Controller
         return redirect()
             ->route('events.show', $event)
             ->withErrors(['registration' => $result['message']]);
+    }
+
+    public function destroy(Event $event): RedirectResponse
+    {
+        $user = request()->user();
+
+        if ($event->ba_start_date?->isPast()) {
+            return redirect()
+                ->route('registrations.index')
+                ->withErrors(['registration' => "Vous ne pouvez plus vous désinscrire après le début de l'événement."]);
+        }
+
+        $registration = Registration::query()
+            ->where('ba_event_id', $event->ba_id)
+            ->where('ba_user_id', $user->ba_id)
+            ->first();
+
+        if (! $registration) {
+            return redirect()
+                ->route('registrations.index')
+                ->withErrors(['registration' => "Vous n'êtes pas inscrit à cet événement."]);
+        }
+
+        $registration->delete();
+
+        return redirect()
+            ->route('registrations.index')
+            ->with('success', 'Désinscription confirmée.');
     }
 }
