@@ -45,7 +45,7 @@ class EventController extends Controller
                 $query->whereDate('ba_start_date', '<=', $dateTo);
             })
             ->orderBy('ba_start_date')
-            ->paginate(9)
+            ->paginate(5)
             ->withQueryString();
 
         $categories = Category::query()
