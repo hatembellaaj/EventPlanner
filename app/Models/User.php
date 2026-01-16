@@ -56,4 +56,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Registration::class, 'ba_user_id', 'ba_id');
     }
+
+    public function isAdmin(): bool
+    {
+        return $this->ba_role === 'admin';
+    }
 }
