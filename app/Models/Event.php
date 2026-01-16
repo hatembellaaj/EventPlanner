@@ -95,7 +95,17 @@ class Event extends Model
             return $this->ba_image;
         }
 
-        return Storage::disk('public')->url($this->ba_image);
+        $publicDisk = Storage::disk('public');
+
+        if ($publicDisk->exists($this->ba_image)) {
+            return $publicDisk->url($this->ba_image);
+        }
+
+        if (file_exists(public_path($this->ba_image))) {
+            return asset($this->ba_image);
+        }
+
+        return $publicDisk->url($this->ba_image);
     }
 
     public function scopeActive(Builder $query): Builder
