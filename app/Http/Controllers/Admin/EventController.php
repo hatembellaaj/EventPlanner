@@ -3,46 +3,107 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\EventStoreRequest;
+use App\Http\Requests\Admin\EventUpdateRequest;
+use App\Models\Category;
 use App\Models\Event;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 class EventController extends Controller
 {
     public function index(): View
     {
-        Gate::authorize('admin');
+        $this->authorize('viewAny', Event::class);
 
-        return view('admin.events.index');
+        $events = Event::query()
+            ->with('category')
+            ->withCount('registrations')
+            ->latest('ba_start_date')
+            ->paginate(10);
+
+        return view('admin.events.index', compact('events'));
+    }
+
+    public function create(): View
+    {
+        $this->authorize('create', Event::class);
+
+        $categories = Category::query()
+            ->orderBy('ba_name')
+            ->get();
+
+        return view('admin.events.create', compact('categories'));
+    }
+
+    public function store(EventStoreRequest $request): RedirectResponse
+    {
+        $this->authorize('create', Event::class);
+
+        $data = $request->validated();
+
+        $event = Event::create([
+            'ba_title' => $data['title'],
+            'ba_description' => $data['description'],
+            'ba_start_date' => $data['start_date'],
+            'ba_end_date' => $data['end_date'],
+            'ba_place' => $data['place'],
+            'ba_capacity' => $data['capacity'],
+            'ba_price' => $data['price'],
+            'ba_is_free' => $data['is_free'],
+            'ba_status' => $data['status'],
+            'ba_category_id' => $data['category_id'],
+            'ba_created_by' => $request->user()->ba_id,
+        ]);
+
+        return redirect()
+            ->route('admin.events.edit', $event)
+            ->with('success', 'Événement créé avec succès.');
+    }
+
+    public function show(Event $event): View
+    {
+        $this->authorize('view', $event);
+
+        $event->loadMissing(['category', 'creator'])
+            ->loadCount('registrations');
+
+        return view('admin.events.show', compact('event'));
     }
 
     public function edit(Event $event): View
     {
-        Gate::authorize('admin');
+        $this->authorize('update', $event);
 
-        return view('admin.events.edit', compact('event'));
+        $categories = Category::query()
+            ->orderBy('ba_name')
+            ->get();
+
+        return view('admin.events.edit', compact('event', 'categories'));
     }
 
-    public function update(Request $request, Event $event): RedirectResponse
+    public function update(EventUpdateRequest $request, Event $event): RedirectResponse
     {
         $this->authorize('update', $event);
 
-        $event->update($request->validate([
-            'ba_title' => ['sometimes', 'string', 'max:255'],
-            'ba_description' => ['sometimes', 'string'],
-            'ba_start_date' => ['sometimes', 'date'],
-            'ba_end_date' => ['sometimes', 'date'],
-            'ba_place' => ['sometimes', 'string', 'max:255'],
-            'ba_capacity' => ['sometimes', 'integer', 'min:0'],
-            'ba_price' => ['sometimes', 'numeric', 'min:0'],
-            'ba_is_free' => ['sometimes', 'boolean'],
-            'ba_status' => ['sometimes', 'string', 'max:50'],
-            'ba_category_id' => ['sometimes', 'integer'],
-        ]));
+        $data = $request->validated();
 
-        return redirect()->route('admin.events.edit', $event);
+        $event->update([
+            'ba_title' => $data['title'],
+            'ba_description' => $data['description'],
+            'ba_start_date' => $data['start_date'],
+            'ba_end_date' => $data['end_date'],
+            'ba_place' => $data['place'],
+            'ba_capacity' => $data['capacity'],
+            'ba_price' => $data['price'],
+            'ba_is_free' => $data['is_free'],
+            'ba_status' => $data['status'],
+            'ba_category_id' => $data['category_id'],
+        ]);
+
+        return redirect()
+            ->route('admin.events.edit', $event)
+            ->with('success', 'Événement mis à jour avec succès.');
     }
 
     public function destroy(Event $event): RedirectResponse
@@ -51,6 +112,8 @@ class EventController extends Controller
 
         $event->delete();
 
-        return redirect()->route('admin.events.index');
+        return redirect()
+            ->route('admin.events.index')
+            ->with('success', 'Événement supprimé avec succès.');
     }
 }
