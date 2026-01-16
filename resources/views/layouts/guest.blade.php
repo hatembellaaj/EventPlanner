@@ -14,7 +14,7 @@
         <div class="mx-auto flex w-full max-w-5xl overflow-hidden rounded-[28px] bg-white shadow-2xl">
             <div
                 class="relative hidden w-5/12 flex-col justify-between bg-cover bg-center p-10 text-white lg:flex"
-                style="background-image: url('{{ request()->routeIs('login') ? 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1000&q=80' : 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1000&q=80' }}')"
+                style="background-image: url('{{ request()->routeIs('login') ? asset('images/Login.png') : 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1000&q=80' }}')"
             >
                 <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/70"></div>
                 <div class="relative z-10 space-y-6">
