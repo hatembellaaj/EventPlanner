@@ -40,4 +40,20 @@ class User extends Authenticatable
     {
         return $this->ba_password;
     }
+
+    public function createdEvents()
+    {
+        return $this->hasMany(Event::class, 'ba_created_by', 'ba_id');
+    }
+
+    public function events()
+    {
+        return $this->belongsToMany(Event::class, 'ba_registrations', 'ba_user_id', 'ba_event_id', 'ba_id', 'ba_id')
+            ->withTimestamps();
+    }
+
+    public function registrations()
+    {
+        return $this->hasMany(Registration::class, 'ba_user_id', 'ba_id');
+    }
 }
