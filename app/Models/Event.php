@@ -105,6 +105,10 @@ class Event extends Model
             return asset($this->ba_image);
         }
 
+        if (file_exists(public_path('images/'.$this->ba_image))) {
+            return asset('images/'.$this->ba_image);
+        }
+
         return $publicDisk->url($this->ba_image);
     }
 
