@@ -62,4 +62,22 @@ class EventController extends Controller
 
         return view('events.index', compact('events', 'categories', 'filters'));
     }
+
+    public function show(Event $event): View
+    {
+        $event->loadMissing('category')->loadCount('registrations');
+
+        $remainingSeats = max(0, (int) $event->ba_capacity - (int) $event->registrations_count);
+        $isFull = $remainingSeats <= 0;
+        $isActive = $event->ba_status === 'active';
+        $isRegistered = false;
+
+        if (auth()->check()) {
+            $isRegistered = $event->registrations()
+                ->where('ba_user_id', auth()->id())
+                ->exists();
+        }
+
+        return view('events.show', compact('event', 'remainingSeats', 'isFull', 'isActive', 'isRegistered'));
+    }
 }

@@ -12,11 +12,15 @@
             <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
                 <div class="text-lg font-semibold">EventPlanner</div>
                 <div class="flex items-center gap-4">
-                    <span class="text-sm text-slate-600">{{ Auth::user()->ba_name ?? '' }}</span>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <x-primary-button type="submit">Se déconnecter</x-primary-button>
-                    </form>
+                    @auth
+                        <span class="text-sm text-slate-600">{{ Auth::user()->ba_name }}</span>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <x-primary-button type="submit">Se déconnecter</x-primary-button>
+                        </form>
+                    @else
+                        <a href="{{ route('login') }}" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">Se connecter</a>
+                    @endauth
                 </div>
             </div>
         </nav>

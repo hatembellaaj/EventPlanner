@@ -6,7 +6,6 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\EventController as PublicEventController;
 use App\Http\Controllers\RegistrationController;
-use App\Models\Event;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -25,14 +24,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
     Route::get('/events', [PublicEventController::class, 'index'])->name('events.index');
-    Route::get('/events/{event}', function (Event $event) {
-        $event->loadMissing('category');
-
-        return view('events.show', compact('event'));
-    })->name('events.show');
-    Route::post('/events/{event}/registrations', [RegistrationController::class, 'store'])
-        ->name('events.registrations.store');
+    Route::post('/events/{event}/register', [RegistrationController::class, 'store'])
+        ->name('events.register');
 });
+
+Route::get('/events/{event}', [PublicEventController::class, 'show'])->name('events.show');
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('events', EventController::class);
