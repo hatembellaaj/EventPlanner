@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\EventController;
+use App\Http\Controllers\Admin\RegistrationController as AdminRegistrationController;
 use App\Http\Controllers\EventController as PublicEventController;
 use App\Http\Controllers\RegistrationController;
 use Illuminate\Support\Facades\Route;
@@ -36,4 +37,5 @@ Route::get('/events/{event}', [PublicEventController::class, 'show'])->name('eve
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('events', EventController::class);
     Route::resource('categories', CategoryController::class)->except('show');
+    Route::get('registrations', [AdminRegistrationController::class, 'index'])->name('registrations.index');
 });
