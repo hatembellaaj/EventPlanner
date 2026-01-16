@@ -22,6 +22,26 @@ Ce dépôt initialise la structure d’un projet Laravel pour l’application **
    php artisan storage:link
    ```
 
+## Base de données
+
+1. Lancer les migrations :
+   ```bash
+   php artisan migrate
+   ```
+2. Charger les données de démonstration (catégories, événements, admin) :
+   ```bash
+   php artisan db:seed
+   ```
+
+> Astuce : vous pouvez tout faire en une commande avec `php artisan migrate --seed`.
+
+## Compte administrateur
+
+Le seeder `AdminUserSeeder` crée un compte admin par défaut :
+
+- **Email** : `admin@eventplanner.test`
+- **Mot de passe** : `Admin123!`
+
 > **Note** : si l’installation échoue à cause de restrictions réseau, réessayez dans un environnement avec accès complet à Packagist.
 
 ## Convention base de données
