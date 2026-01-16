@@ -52,6 +52,11 @@ class Event extends Model
         return $this->belongsTo(User::class, 'ba_created_by', 'ba_id');
     }
 
+    public function getRouteKeyName(): string
+    {
+        return 'ba_id';
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class, 'ba_category_id', 'ba_id');

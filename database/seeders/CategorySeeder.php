@@ -15,6 +15,9 @@ class CategorySeeder extends Seeder
             'Atelier',
             'Webinaire',
             'Meetup',
+            'Hackathon',
+            'Networking',
+            'Formation',
         ];
 
         foreach ($categories as $name) {

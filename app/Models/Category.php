@@ -32,4 +32,9 @@ class Category extends Model
     {
         return $this->hasMany(Event::class, 'ba_category_id', 'ba_id');
     }
+
+    public function getRouteKeyName(): string
+    {
+        return 'ba_id';
+    }
 }
