@@ -54,6 +54,13 @@
             </div>
         </div>
 
+        @if ($event->imageUrl())
+            <div>
+                <p class="text-xs uppercase tracking-wide text-slate-400">Illustration</p>
+                <img src="{{ $event->imageUrl() }}" alt="Illustration de l'événement {{ $event->ba_title }}" class="mt-2 h-64 w-full rounded-2xl object-cover" />
+            </div>
+        @endif
+
         <div>
             <p class="text-xs uppercase tracking-wide text-slate-400">Description</p>
             <p class="mt-2 text-sm text-slate-700">{{ $event->ba_description }}</p>

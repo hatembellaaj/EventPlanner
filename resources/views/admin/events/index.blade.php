@@ -27,6 +27,7 @@
                 <thead class="bg-slate-50 text-left text-sm font-semibold text-slate-600">
                     <tr>
                         <th class="px-4 py-3">Titre</th>
+                        <th class="px-4 py-3">Image</th>
                         <th class="px-4 py-3">Catégorie</th>
                         <th class="px-4 py-3">Dates</th>
                         <th class="px-4 py-3">Statut</th>
@@ -42,6 +43,13 @@
                         @endphp
                         <tr>
                             <td class="px-4 py-3 font-medium text-slate-800">{{ $event->ba_title }}</td>
+                            <td class="px-4 py-3">
+                                @if ($event->imageUrl())
+                                    <img src="{{ $event->imageUrl() }}" alt="Illustration de l'événement {{ $event->ba_title }}" class="h-12 w-16 rounded object-cover" />
+                                @else
+                                    <span class="text-xs text-slate-400">Aucune</span>
+                                @endif
+                            </td>
                             <td class="px-4 py-3 text-slate-600">{{ $event->category?->ba_name ?? 'Non renseignée' }}</td>
                             <td class="px-4 py-3 text-slate-600">
                                 <div>{{ $event->ba_start_date?->format('d/m/Y H:i') }}</div>
@@ -72,7 +80,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-4 py-6 text-center text-slate-500">
+                            <td colspan="8" class="px-4 py-6 text-center text-slate-500">
                                 Aucun événement pour le moment.
                             </td>
                         </tr>

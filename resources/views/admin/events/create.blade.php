@@ -70,7 +70,8 @@
                 </div>
                 <div>
                     <x-input-label for="image" value="Image" />
-                    <input id="image" name="image" type="file" class="mt-2 block w-full text-sm text-slate-500" />
+                    <input id="image" name="image" type="file" accept="image/png,image/jpeg,image/webp" class="mt-2 block w-full text-sm text-slate-500" />
+                    <p class="mt-2 text-xs text-slate-500">Formats acceptés : JPG, PNG, WEBP. Taille max : 2 Mo.</p>
                     <x-input-error :messages="$errors->get('image')" class="mt-2" />
                 </div>
             </div>

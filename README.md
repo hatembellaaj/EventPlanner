@@ -17,6 +17,10 @@ Ce dépôt initialise la structure d’un projet Laravel pour l’application **
    ```bash
    php artisan serve
    ```
+4. Publier le lien de stockage (pour les images) :
+   ```bash
+   php artisan storage:link
+   ```
 
 > **Note** : si l’installation échoue à cause de restrictions réseau, réessayez dans un environnement avec accès complet à Packagist.
 
