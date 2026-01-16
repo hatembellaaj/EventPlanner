@@ -32,6 +32,7 @@ class EventSeeder extends Seeder
                 'ba_price' => 79.00,
                 'ba_is_free' => false,
                 'ba_status' => 'active',
+                'ba_image' => 'https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1200&q=80',
                 'ba_category_id' => $categoryMap->get('Conférence'),
             ],
             [
@@ -44,6 +45,7 @@ class EventSeeder extends Seeder
                 'ba_price' => 0.00,
                 'ba_is_free' => true,
                 'ba_status' => 'active',
+                'ba_image' => 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80',
                 'ba_category_id' => $categoryMap->get('Atelier'),
             ],
             [
@@ -56,6 +58,7 @@ class EventSeeder extends Seeder
                 'ba_price' => 0.00,
                 'ba_is_free' => true,
                 'ba_status' => 'active',
+                'ba_image' => 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80',
                 'ba_category_id' => $categoryMap->get('Webinaire'),
             ],
         ];
