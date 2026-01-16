@@ -1,10 +1,6 @@
 <x-guest-layout>
     <div class="flex flex-col gap-10 lg:flex-row lg:items-center">
-        <img
-            src="{{ asset('images/Login.png') }}"
-            alt="Login illustration"
-            class="w-full max-w-md rounded-2xl object-cover shadow-sm lg:order-first"
-        />
+
         <div class="space-y-8">
             <div class="text-center">
                 <p class="text-sm font-semibold uppercase tracking-[0.4em] text-slate-300">Event Planner</p>
