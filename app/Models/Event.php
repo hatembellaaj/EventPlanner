@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class Event extends Model
 {
@@ -83,6 +84,10 @@ class Event extends Model
     {
         if (! $this->ba_image) {
             return null;
+        }
+
+        if (Str::startsWith($this->ba_image, ['http://', 'https://'])) {
+            return $this->ba_image;
         }
 
         return Storage::disk('public')->url($this->ba_image);
