@@ -8,7 +8,9 @@ use App\Http\Requests\Admin\EventUpdateRequest;
 use App\Models\Category;
 use App\Models\Event;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class EventController extends Controller
@@ -42,7 +44,7 @@ class EventController extends Controller
         $this->authorize('create', Event::class);
 
         $data = $request->validated();
-        $imagePath = $request->file('image')?->store('events', 'public');
+        $imagePath = $this->storeEventImage($request->file('image'));
 
         $event = Event::create([
             'ba_title' => $data['title'],
@@ -105,11 +107,8 @@ class EventController extends Controller
         ];
 
         if ($request->hasFile('image')) {
-            if ($event->ba_image) {
-                Storage::disk('public')->delete($event->ba_image);
-            }
-
-            $payload['ba_image'] = $request->file('image')->store('events', 'public');
+            $this->deleteEventImage($event->ba_image);
+            $payload['ba_image'] = $this->storeEventImage($request->file('image'));
         }
 
         $event->update($payload);
@@ -124,7 +123,7 @@ class EventController extends Controller
         $this->authorize('delete', $event);
 
         if ($event->ba_image) {
-            Storage::disk('public')->delete($event->ba_image);
+            $this->deleteEventImage($event->ba_image);
         }
 
         $event->delete();
@@ -132,5 +131,44 @@ class EventController extends Controller
         return redirect()
             ->route('admin.events.index')
             ->with('success', 'Événement supprimé avec succès.');
+    }
+
+    private function storeEventImage(?UploadedFile $image): ?string
+    {
+        if (! $image) {
+            return null;
+        }
+
+        $directory = public_path('images/events');
+
+        if (! is_dir($directory)) {
+            mkdir($directory, 0755, true);
+        }
+
+        $filename = Str::uuid().'.'.$image->getClientOriginalExtension();
+        $image->move($directory, $filename);
+
+        return 'images/events/'.$filename;
+    }
+
+    private function deleteEventImage(?string $imagePath): void
+    {
+        if (! $imagePath) {
+            return;
+        }
+
+        if (Storage::disk('public')->exists($imagePath)) {
+            Storage::disk('public')->delete($imagePath);
+        }
+
+        $publicPath = public_path($imagePath);
+        if (file_exists($publicPath)) {
+            unlink($publicPath);
+        }
+
+        $legacyPublicPath = public_path('images/'.$imagePath);
+        if (file_exists($legacyPublicPath)) {
+            unlink($legacyPublicPath);
+        }
     }
 }
